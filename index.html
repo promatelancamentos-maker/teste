@@ -1,144 +1,236 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Bible Quiz</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-    }
-    .quiz-container {
-      background: #fff;
-      padding: 20px;
-      max-width: 500px;
-      margin: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-    }
-    .question {
-      font-size: 18px;
-      margin-bottom: 15px;
-    }
-    .option {
-      background: #eee;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .option:hover {
-      background: #ddd;
-    }
-    .correct {
-      background: #c8e6c9;
-    }
-    .wrong {
-      background: #ffcdd2;
-    }
-    .next-btn {
-      margin-top: 15px;
-      padding: 10px;
-      width: 100%;
-      border: none;
-      background: #333;
-      color: #fff;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .score {
-      text-align: center;
-      font-size: 20px;
-    }
-    .verse {
-      font-size: 14px;
-      color: #555;
-      margin-top: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Daily Bible Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #121212;
+  color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.quiz-box {
+  background: #1c1c1c;
+  max-width: 520px;
+  width: 90%;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  animation: fadeIn 1s ease;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #bbb;
+  margin-bottom: 20px;
+}
+
+.progress {
+  height: 6px;
+  background: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #c9a86a;
+  transition: width 0.5s ease;
+}
+
+.question {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.option {
+  background: #2a2a2a;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.option:hover {
+  background: #3a3a3a;
+}
+
+.correct {
+  background: #2e7d32;
+}
+
+.wrong {
+  background: #8e2a2a;
+}
+
+.verse {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #c9a86a;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #c9a86a;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.result {
+  text-align: center;
+  font-size: 20px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
+
 <body>
 
-<div class="quiz-container">
-  <h2>📖 Bible Quiz</h2>
+<div class="quiz-box">
+  <h1>📖 Daily Bible Quiz</h1>
+  <div class="subtitle">Um novo quiz a cada dia</div>
+
+  <div class="progress">
+    <div class="progress-bar" id="progress"></div>
+  </div>
+
   <div id="quiz"></div>
-  <button class="next-btn" onclick="nextQuestion()">Próxima</button>
+  <button id="nextBtn" onclick="nextQuestion()">Continuar</button>
 </div>
 
 <script>
-const quizData = [
-  {
-    question: "Quem se casou com sua meia-irmã?",
-    options: ["Abraão", "Isaque", "Jacó", "Moisés"],
-    answer: 0,
-    verse: "Gênesis 20:12"
-  },
-  {
-    question: "Quem era o homem da terra de Uz?",
-    options: ["Jó", "Abraão", "Noé", "Elias"],
-    answer: 0,
-    verse: "Jó 1:1"
-  },
-  {
-    question: "Qual discípulo ficou aos pés da cruz?",
-    options: ["Pedro", "João", "Tomé", "Mateus"],
-    answer: 1,
-    verse: "João 19:26"
-  }
+const questionPools = [
+  [
+    {
+      q: "Quem se casou com sua meia-irmã?",
+      o: ["Abraão", "Isaque", "Jacó", "Moisés"],
+      a: 0,
+      v: "Gênesis 20:12"
+    },
+    {
+      q: "Quem era o homem da terra de Uz?",
+      o: ["Jó", "Noé", "Elias", "Samuel"],
+      a: 0,
+      v: "Jó 1:1"
+    },
+    {
+      q: "Quem ficou aos pés da cruz?",
+      o: ["Pedro", "João", "Mateus", "Tomé"],
+      a: 1,
+      v: "João 19:26"
+    }
+  ],
+  [
+    {
+      q: "Quem construiu a arca?",
+      o: ["Abraão", "Moisés", "Noé", "Davi"],
+      a: 2,
+      v: "Gênesis 6:14"
+    },
+    {
+      q: "Quem derrotou Golias?",
+      o: ["Saul", "Davi", "Sansão", "Josué"],
+      a: 1,
+      v: "1 Samuel 17:50"
+    },
+    {
+      q: "Quem foi engolido por um grande peixe?",
+      o: ["Jonas", "Elias", "Jeremias", "Amós"],
+      a: 0,
+      v: "Jonas 1:17"
+    }
+  ]
 ];
 
-let currentQuestion = 0;
+// Seleção diária baseada na data
+const todayIndex = new Date().toISOString().slice(0,10)
+  .split("-").reduce((a,b)=>a+parseInt(b),0) % questionPools.length;
+
+const quizData = questionPools[todayIndex];
+
+let index = 0;
 let score = 0;
 let answered = false;
 
 function loadQuestion() {
   answered = false;
-  const q = quizData[currentQuestion];
+  const q = quizData[index];
   document.getElementById("quiz").innerHTML = `
-    <div class="question">${q.question}</div>
-    ${q.options.map((opt, i) => 
-      `<div class="option" onclick="selectOption(${i})">${opt}</div>`
-    ).join("")}
+    <div class="question">${q.q}</div>
+    ${q.o.map((opt,i)=>`<div class="option" onclick="select(${i})">${opt}</div>`).join("")}
   `;
+  updateProgress();
 }
 
-function selectOption(index) {
+function select(i) {
   if (answered) return;
   answered = true;
-  const q = quizData[currentQuestion];
+  const q = quizData[index];
   const options = document.querySelectorAll(".option");
 
-  options.forEach((opt, i) => {
-    if (i === q.answer) opt.classList.add("correct");
-    if (i === index && i !== q.answer) opt.classList.add("wrong");
+  options.forEach((el,idx)=>{
+    if (idx === q.a) el.classList.add("correct");
+    if (idx === i && idx !== q.a) el.classList.add("wrong");
   });
 
-  if (index === q.answer) score++;
+  if (i === q.a) score++;
 
-  document.getElementById("quiz").innerHTML += `
-    <div class="verse">📜 ${q.verse}</div>
-  `;
+  document.getElementById("quiz").innerHTML += `<div class="verse">📜 ${q.v}</div>`;
 }
 
 function nextQuestion() {
   if (!answered) return;
-  currentQuestion++;
-  if (currentQuestion < quizData.length) {
+  index++;
+  if (index < quizData.length) {
     loadQuestion();
   } else {
     document.getElementById("quiz").innerHTML = `
-      <div class="score">
-        ✅ Você acertou ${score} de ${quizData.length} perguntas
+      <div class="result">
+        ✅ Você acertou ${score} de ${quizData.length}<br><br>
+        🕯️ Volte amanhã para um novo quiz
       </div>
     `;
-    document.querySelector(".next-btn").style.display = "none";
+    document.getElementById("nextBtn").style.display = "none";
+    updateProgress(true);
   }
+}
+
+function updateProgress(end=false) {
+  const percent = end ? 100 : (index / quizData.length) * 100;
+  document.getElementById("progress").style.width = percent + "%";
 }
 
 loadQuestion();
@@ -146,3 +238,6 @@ loadQuestion();
 
 </body>
 </html>
+
+
+
