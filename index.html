@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Bible Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    .question {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    .option {
+      background: #eee;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .option:hover {
+      background: #ddd;
+    }
+    .correct {
+      background: #c8e6c9;
+    }
+    .wrong {
+      background: #ffcdd2;
+    }
+    .next-btn {
+      margin-top: 15px;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      background: #333;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .score {
+      text-align: center;
+      font-size: 20px;
+    }
+    .verse {
+      font-size: 14px;
+      color: #555;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-container">
+  <h2>📖 Bible Quiz</h2>
+  <div id="quiz"></div>
+  <button class="next-btn" onclick="nextQuestion()">Próxima</button>
+</div>
+
+<script>
+const quizData = [
+  {
+    question: "Quem se casou com sua meia-irmã?",
+    options: ["Abraão", "Isaque", "Jacó", "Moisés"],
+    answer: 0,
+    verse: "Gênesis 20:12"
+  },
+  {
+    question: "Quem era o homem da terra de Uz?",
+    options: ["Jó", "Abraão", "Noé", "Elias"],
+    answer: 0,
+    verse: "Jó 1:1"
+  },
+  {
+    question: "Qual discípulo ficou aos pés da cruz?",
+    options: ["Pedro", "João", "Tomé", "Mateus"],
+    answer: 1,
+    verse: "João 19:26"
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+function loadQuestion() {
+  answered = false;
+  const q = quizData[currentQuestion];
+  document.getElementById("quiz").innerHTML = `
+    <div class="question">${q.question}</div>
+    ${q.options.map((opt, i) => 
+      `<div class="option" onclick="selectOption(${i})">${opt}</div>`
+    ).join("")}
+  `;
+}
+
+function selectOption(index) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[currentQuestion];
+  const options = document.querySelectorAll(".option");
+
+  options.forEach((opt, i) => {
+    if (i === q.answer) opt.classList.add("correct");
+    if (i === index && i !== q.answer) opt.classList.add("wrong");
+  });
+
+  if (index === q.answer) score++;
+
+  document.getElementById("quiz").innerHTML += `
+    <div class="verse">📜 ${q.verse}</div>
+  `;
+}
+
+function nextQuestion() {
+  if (!answered) return;
+  currentQuestion++;
+  if (currentQuestion < quizData.length) {
+    loadQuestion();
+  } else {
+    document.getElementById("quiz").innerHTML = `
+      <div class="score">
+        ✅ Você acertou ${score} de ${quizData.length} perguntas
+      </div>
+    `;
+    document.querySelector(".next-btn").style.display = "none";
+  }
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
