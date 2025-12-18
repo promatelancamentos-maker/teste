@@ -33,14 +33,14 @@ h1 {
   font-family: 'Playfair Display', serif;
   text-align: center;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .subtitle {
   text-align: center;
   font-size: 14px;
   color: #bbb;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .progress {
@@ -76,13 +76,8 @@ h1 {
   background: #3a3a3a;
 }
 
-.correct {
-  background: #2e7d32;
-}
-
-.wrong {
-  background: #8e2a2a;
-}
+.correct { background: #2e7d32; }
+.wrong { background: #8e2a2a; }
 
 .verse {
   margin-top: 12px;
@@ -99,10 +94,6 @@ button {
   background: #c9a86a;
   font-size: 16px;
   cursor: pointer;
-}
-
-button:hover {
-  opacity: 0.9;
 }
 
 .result {
@@ -133,57 +124,51 @@ button:hover {
 
 <script>
 const questionPools = [
-  [
-    {
-      q: "Quem se casou com sua meia-irmã?",
-      o: ["Abraão", "Isaque", "Jacó", "Moisés"],
-      a: 0,
-      v: "Gênesis 20:12"
-    },
-    {
-      q: "Quem era o homem da terra de Uz?",
-      o: ["Jó", "Noé", "Elias", "Samuel"],
-      a: 0,
-      v: "Jó 1:1"
-    },
-    {
-      q: "Quem ficou aos pés da cruz?",
-      o: ["Pedro", "João", "Mateus", "Tomé"],
-      a: 1,
-      v: "João 19:26"
-    }
-  ],
-  [
-    {
-      q: "Quem construiu a arca?",
-      o: ["Abraão", "Moisés", "Noé", "Davi"],
-      a: 2,
-      v: "Gênesis 6:14"
-    },
-    {
-      q: "Quem derrotou Golias?",
-      o: ["Saul", "Davi", "Sansão", "Josué"],
-      a: 1,
-      v: "1 Samuel 17:50"
-    },
-    {
-      q: "Quem foi engolido por um grande peixe?",
-      o: ["Jonas", "Elias", "Jeremias", "Amós"],
-      a: 0,
-      v: "Jonas 1:17"
-    }
-  ]
+
+/* QUIZ 1 */
+[
+  { q:"Quem se casou com sua meia-irmã?", o:["Abraão","Isaque","Jacó","Moisés"], a:0, v:"Gênesis 20:12" },
+  { q:"Quem era o homem da terra de Uz?", o:["Jó","Noé","Samuel","Elias"], a:0, v:"Jó 1:1" },
+  { q:"Quem ficou aos pés da cruz?", o:["Pedro","João","Mateus","Tomé"], a:1, v:"João 19:26" }
+],
+
+/* QUIZ 2 */
+[
+  { q:"Quem construiu a arca?", o:["Noé","Abraão","Moisés","Davi"], a:0, v:"Gênesis 6:14" },
+  { q:"Quem derrotou Golias?", o:["Saul","Davi","Josué","Sansão"], a:1, v:"1 Samuel 17:50" },
+  { q:"Quem foi engolido por um grande peixe?", o:["Jonas","Amós","Jeremias","Elias"], a:0, v:"Jonas 1:17" }
+],
+
+/* QUIZ 3 */
+[
+  { q:"Quem recebeu os Dez Mandamentos?", o:["Abraão","Moisés","Josué","Arão"], a:1, v:"Êxodo 20:1" },
+  { q:"Qual evangelho começa com 'No princípio era o Verbo'?", o:["Mateus","Marcos","Lucas","João"], a:3, v:"João 1:1" },
+  { q:"Quem escreveu a maioria dos Salmos?", o:["Salomão","Davi","Moisés","Asafe"], a:1, v:"Salmos 23:1" }
+],
+
+/* QUIZ 4 */
+[
+  { q:"Quem negou Jesus três vezes?", o:["João","Pedro","Tomé","Tiago"], a:1, v:"Lucas 22:61" },
+  { q:"Quem foi lançado na cova dos leões?", o:["Davi","Daniel","Jeremias","José"], a:1, v:"Daniel 6:16" },
+  { q:"Quem interpretou os sonhos no Egito?", o:["Moisés","José","Faraó","Arão"], a:1, v:"Gênesis 41:15" }
+],
+
+/* QUIZ 5 */
+[
+  { q:"Quem liderou o povo na queda de Jericó?", o:["Moisés","Josué","Calebe","Gideão"], a:1, v:"Josué 6:20" },
+  { q:"Quem escreveu o livro de Apocalipse?", o:["Pedro","Paulo","João","Lucas"], a:2, v:"Apocalipse 1:1" },
+  { q:"Quem foi chamado de amigo de Deus?", o:["Isaque","Jacó","Abraão","Noé"], a:2, v:"Tiago 2:23" }
+]
+
 ];
 
-// Seleção diária baseada na data
-const todayIndex = new Date().toISOString().slice(0,10)
-  .split("-").reduce((a,b)=>a+parseInt(b),0) % questionPools.length;
+// QUIZ DIÁRIO (baseado na data)
+const todayKey = new Date().toISOString().slice(0,10)
+  .split("-").reduce((a,b)=>a+parseInt(b),0);
 
-const quizData = questionPools[todayIndex];
+const quizData = questionPools[todayKey % questionPools.length];
 
-let index = 0;
-let score = 0;
-let answered = false;
+let index = 0, score = 0, answered = false;
 
 function loadQuestion() {
   answered = false;
@@ -199,38 +184,32 @@ function select(i) {
   if (answered) return;
   answered = true;
   const q = quizData[index];
-  const options = document.querySelectorAll(".option");
-
-  options.forEach((el,idx)=>{
+  document.querySelectorAll(".option").forEach((el,idx)=>{
     if (idx === q.a) el.classList.add("correct");
     if (idx === i && idx !== q.a) el.classList.add("wrong");
   });
-
   if (i === q.a) score++;
-
   document.getElementById("quiz").innerHTML += `<div class="verse">📜 ${q.v}</div>`;
 }
 
 function nextQuestion() {
   if (!answered) return;
   index++;
-  if (index < quizData.length) {
-    loadQuestion();
-  } else {
+  if (index < quizData.length) loadQuestion();
+  else {
     document.getElementById("quiz").innerHTML = `
       <div class="result">
         ✅ Você acertou ${score} de ${quizData.length}<br><br>
         🕯️ Volte amanhã para um novo quiz
-      </div>
-    `;
+      </div>`;
     document.getElementById("nextBtn").style.display = "none";
     updateProgress(true);
   }
 }
 
 function updateProgress(end=false) {
-  const percent = end ? 100 : (index / quizData.length) * 100;
-  document.getElementById("progress").style.width = percent + "%";
+  document.getElementById("progress").style.width =
+    (end ? 100 : (index / quizData.length) * 100) + "%";
 }
 
 loadQuestion();
@@ -238,6 +217,8 @@ loadQuestion();
 
 </body>
 </html>
+
+
 
 
 
